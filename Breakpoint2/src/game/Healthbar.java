@@ -1,4 +1,5 @@
 package game;
+import java.awt.*;
 /**
  * @author Kai
  * 
@@ -11,11 +12,11 @@ package game;
 class Healthbar extends Polygon {
     
     Point[][] bars;
+	static int radius = 10;
 
     public Healthbar(Point inPosition, double inRotation) {
         
         super(createDodecagonArray(), inPosition, 0);
-		this.color = color.white;
 	}
 
     /**
@@ -33,22 +34,22 @@ class Healthbar extends Polygon {
             
         }
 
-		int[] xpos = new int[points.length];
-		int[] ypos = new int[points.length];
-		for (int i = 0; i < points.length; i++) {
-			xpos[i] = (int) points[i].getX();
-			ypos[i] = (int) points[i].getY();
+		int[] xpos = new int[shape.length];
+		int[] ypos = new int[shape.length];
+		for (int i = 0; i < shape.length; i++) {
+			xpos[i] = (int) shape[i].getX();
+			ypos[i] = (int) shape[i].getY();
 		}
-		brush.setColor(Color.getHSBColor(hue, saturation, brightness));
-		brush.fillPolygon(xpos, ypos, points.length);
+		brush.setColor(Color.white);
+		brush.fillPolygon(xpos, ypos, shape.length);
 	}
 
     private static Point[] createDodecagonArray() {
 		Point[] dodecaPoints = new Point[12];
-		 for (int i = 0; i < dodecaPoints.length; i++) {
+			for (int i = 0; i < dodecaPoints.length; i++) {
 				dodecaPoints[i] =
 						new Point(Math.cos((Math.PI*i*30/180))*radius, Math.sin((Math.PI*i*30/180))*radius);
-				}
-		 return dodecaPoints;
-		}
+			}
+		return dodecaPoints;
+	}
 }
