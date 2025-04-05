@@ -34,6 +34,14 @@ parse hour: https://stackoverflow.com/questions/22278748/zsh-parse-error-near-n-
 adding clone repo with vscode: https://stackoverflow.com/questions/46877667/how-to-add-a-new-project-to-github-using-vs-code
 
 
+Indentation: On the bottomost bar, selects Spaces: [number]. At the top search bar, select indent by tab, and select the number of spaces per tab. 4 spaces is default, select it.
+
+
+
+
+
+
+
 
 
 
