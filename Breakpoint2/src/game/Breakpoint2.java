@@ -13,12 +13,12 @@ import java.awt.event.*;
 class Breakpoint2 extends Game {
 	static int counter = 0;
 
-  public Breakpoint2() {
-    super("Breakpoint2!",800,600);
-    this.setFocusable(true);
-	this.requestFocus();
-  }
-  
+	public Breakpoint2() {
+		super("Breakpoint2!",800,600);
+    	this.setFocusable(true);
+		this.requestFocus();
+  	}
+
 	public void paint(Graphics brush) {
     	brush.setColor(Color.black);
     	brush.fillRect(0,0,width,height);
