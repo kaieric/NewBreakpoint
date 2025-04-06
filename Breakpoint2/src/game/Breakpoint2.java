@@ -140,7 +140,7 @@ class Breakpoint2 extends Game {
 
 	private Paddle spawnPaddle() {
 		Point[] temp = {new Point(0,0), new Point(40,0), new Point(40, 10), new Point(0,10)};
-			Paddle p = new Paddle(temp, new Point(560,550), 0);
+			Paddle p = new Paddle(temp, new Point(560,500), 0);
 			return p;
 	}
 

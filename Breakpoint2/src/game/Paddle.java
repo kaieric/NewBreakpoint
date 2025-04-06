@@ -20,14 +20,6 @@ public class Paddle extends Polygon implements KeyListener {
 	 */
 	public boolean leftArrow;
 	/**
-	 * Up arrow boolean causes the paddle to rotate clockwise every time move() is called, which is every frame.
-	 */
-	public boolean upArrow;
-	/**
-	 * Down arrow boolean causes the paddle to rotate counterclockwise every time move() is called, which is every frame.
-	 */
-	public boolean downArrow;
-	/**
 	 * Is the number of pixels traversed every tenth of a second by the paddle when in motion.
 	 */
 	public int step = 15;
@@ -53,20 +45,11 @@ public class Paddle extends Polygon implements KeyListener {
 	public void move() { 
 		if (this.rightArrow && this.position.getX() < 760) { //moves to the right.
 			this.position.setX(this.position.getX() + step);
-	}
-	if (this.leftArrow && this.position.getX() > 220) { //moves to the left.
-		this.position.setX(this.position.getX() - step); //changes what the correct coordinates are.
-	}
-	//rotation implementation
-	if (this.upArrow && this.rotation < 26) { //moves to the right.
-			this.rotation += 3;
-	}
-	if (this.downArrow && this.rotation > -26) { //moves to the left.
-		this.rotation -= 3;
-	}
-	angle = this.rotation;
-	}
-	
+        }
+        if (this.leftArrow && this.position.getX() > 220) { //moves to the left.
+            this.position.setX(this.position.getX() - step); //changes what the correct coordinates are.
+        }
+    }
 	/**
 	* moves the position based on which arrow is pressed and implements rotation
 	* @return double  gets the angle of the paddle
@@ -90,13 +73,6 @@ public class Paddle extends Polygon implements KeyListener {
 		if (keyCode == KeyEvent.VK_RIGHT) {
 			rightArrow = true;
 		}
-		if (keyCode == KeyEvent.VK_UP) {
-			upArrow = true;
-		}
-		if (keyCode == KeyEvent.VK_DOWN) {
-			downArrow = true;
-		}
-		// Code to be executed if no case matches the expression
 	}
 	
 	/**
@@ -113,12 +89,6 @@ public class Paddle extends Polygon implements KeyListener {
 		}
 		if(keyCode == KeyEvent.VK_RIGHT) {
 			rightArrow = false;
-		}
-		if (keyCode == KeyEvent.VK_UP) {
-			upArrow = false;
-		}
-		if (keyCode == KeyEvent.VK_DOWN) {
-			downArrow = false;
 		}
 	}
 	
