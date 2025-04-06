@@ -9,16 +9,24 @@ NOTE: This class is the metaphorical "main method" of your program,
 */
 import java.awt.*;
 import java.awt.event.*; //allows for interfaces like keylistener. Look into this?
+import java.util.ArrayList;
 
 class Breakpoint2 extends Game {
 	/*
 	 * 
-	 * counter >> Records the frame number, delete this
-	 * phase >> Records in String form what screen we are on.
+	 * COUNTER >> Records the frame number, delete this
+	 * PHASE >> Records in String form what screen we are on.
 	 * 
 	 */
-	static int counter = 0;
-	static String phase = "menu";
+	static int COUNTER = 0;
+	static String PHASE = "menu";
+	private static int SPEED = 5;
+	private static int LIVES = 3;
+
+	private static Paddle p;
+	private static ArrayList<Brick> BRICKLIST = new ArrayList<Brick>();
+
+	private static boolean INMOTION;
 
 	public Breakpoint2() {
 		super("Breakpoint2!",800,600);
@@ -32,27 +40,29 @@ class Breakpoint2 extends Game {
 		Color dullAzure = new Color(1, 27, 50);
 
 		//sets the black background.
-    	brush.setColor(Color.black);
+    	//brush.setColor(Color.black);
     	brush.fillRect(0,0,width,height); //width and height are params in game super class.
 
-		//phases: menu, stage01, stage02, stage03, void (end screen)
+		//PHASES: menu, stage01, stage02, stage03, void (end screen)
 
-		System.out.println(phase);
-		if (phase.equals("menu")) {
+		if (PHASE.equals("menu")) {
 			
 			
 		}
 
-		if (phase.length() > 5 && phase.substring(0,5).equals("stage")) { //if we are on a stage
+		if (PHASE.length() > 5 && PHASE.substring(0,5).equals("stage")) { //if we are on a stage
 			brush.setColor(dullAzure); //sets menu color
 			brush.fillRect(200,0,600,600); //width and height are params in game super class.
+
+			p.move();
+			paintObjects.paint(brush, Color.white, p);
 		}
     	// sample code for printing message for debugging
-    	// counter is incremented and this message printed
+    	// COUNTER is incremented and this message printed
     	// each time the canvas is repainted
-    	counter++;
+    	COUNTER++;
     	brush.setColor(Color.white);
-    	brush.drawString("Counter is " + counter,10,10);
+    	brush.drawString("COUNTER is " + COUNTER,10,10);
   	}
   
 	public static void main (String[] args) {
@@ -103,8 +113,12 @@ class Breakpoint2 extends Game {
 
 			//if space is pressed on the menu, the first stage begins.
 			if ((keyCode == KeyEvent.VK_SPACE)) {
-				if (phase.equals("menu")) {
-					phase = "stage01";
+				if (PHASE.equals("menu")) {
+					PHASE = "stage01";
+					p = spawnPaddle(); //spawns in the paddle. Can be moved elsewhere, like if we desire for this to be called after start is pressed on the MENU
+					addKeyListener(p); //this is necessary for the paddle object to detect key presses.
+					addKeyListener(new keyHandler()); //adds key handling to the anonymous class inside of breakou- sorry BREAKPOINT.
+
 				} //else { //add this in for pause, and secondary menu implementation
 			}
 			/* 
@@ -122,6 +136,12 @@ class Breakpoint2 extends Game {
 			
 		}
 		
+	}
+
+	private Paddle spawnPaddle() {
+		Point[] temp = {new Point(0,0), new Point(40,0), new Point(40, 10), new Point(0,10)};
+			Paddle p = new Paddle(temp, new Point(560,550), 0);
+			return p;
 	}
 
   

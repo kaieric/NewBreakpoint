@@ -28,6 +28,9 @@ Terminal instructions:
 
 Step 4's purpose is to set main as the default push location.
 
+When Pulling code:
+just write "git pull" and you're done.
+
 Links:
 https://code.visualstudio.com/docs/sourcecontrol/intro-to-git ()
 parse hour: https://stackoverflow.com/questions/22278748/zsh-parse-error-near-n-when-adding-aws-keys-as-environment-variables
