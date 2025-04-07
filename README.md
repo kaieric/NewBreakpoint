@@ -42,7 +42,22 @@ Indentation: On the bottomost bar, selects Spaces: [number]. At the top search b
 
 
 
+PRELIMINARY GOAL:
+Basic functionality of:
+-Menu
+-Healthbar
+-Cutesy pricks, ball, and paddle (skins atop the collision matrices)
+-Rename point[] shape to matrix, and have a collision matrix, and then aesthetic matrices.
 
+-Alter Polygon such that instead of a single shape, we have a collision matrix IN ADDITION to an array of skin arrays / images??? which are all moved by getPosition and whatnot.
+-
+-
+
+NOTES:
+-Spawn ball should have some parameters, allowing spawning them in in motion or not, with a starting angle. This will be used to handle both respawning and cloninng
+-In motion should be a ball variable, with a ball array being looped through, each ball's inmotion checked before moving and checking them.
+-Ball death triggered when the ball array is empty.
+-When a ball is cloned through a brick, the newly spawned ball should start off moving in the opposite direction of the original ball, in order to stop any issues,
 
 
 

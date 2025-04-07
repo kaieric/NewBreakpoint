@@ -1,64 +1,65 @@
 package game;
-
+import java.util.ArrayList;
 /*
 CLASS: Polygon
 DESCRIPTION: A polygon is a sequence of points in space defined by a set of
              such points, an offset, and a rotation. The offset is the
-             distance between the origin and the center of the shape.
+             distance between the origin and the center of the collisionMatrix.
              The rotation is measured in degrees, 0-360.
 USAGE: You are intended to instantiate this class with a set of points that
-       forever defines its shape, and then modify it by repositioning and
-       rotating that shape. In defining the shape, the relative positions
+       forever defines its collisionMatrix, and then modify it by repositioning and
+       rotating that collisionMatrix. In defining the collisionMatrix, the relative positions
        of the points you provide are used, in other words: {(0,1),(1,1),(1,0)}
-       is the same shape as {(9,10),(10,10),(10,9)}.
+       is the same collisionMatrix as {(9,10),(10,10),(10,9)}.
 NOTE: You don't need to worry about the "magic math" details.
 
 */
 
 public class Polygon {
-	public Point[] shape;   // An array of points.
+	public Point[] collisionMatrix;   // An array of points.
+	public ArrayList<Point[]> animationMatrices = new ArrayList<Point[]>(); //an array list of matrices that serve as layers in animation.
 	public Point position;   // The offset mentioned above.
 	public double rotation; // Zero degrees is due east.
 	/**
  	* 
- 	* @param inShape		Stores the geometric identity of the polygon in the form of an array of constituent points.
+ 	* @param incollisionMatrix		Stores the geometric identity of the polygon in the form of an array of constituent points.
  	* @param inPosition	Stores the geometric location of the polygon in the form of a point, representing the vector
  	* between the average center point of the polygon, and the center (top left) of the grid.	
- 	* @param inRotation	Stores the angle at which the point array, shape, is to be rotated before being pulled for painting
+ 	* @param inRotation	Stores the angle at which the point array, collisionMatrix, is to be rotated before being pulled for painting
  	* or collision checking.
  	*/
-	public Polygon(Point[] inShape, Point inPosition, double inRotation) {
-		shape = inShape;
+	public Polygon(Point[] incollisionMatrix, Point inPosition, double inRotation) {
+		collisionMatrix = incollisionMatrix;
 		position = inPosition;
 		rotation = inRotation;
 
-	//	First, we find the shape's top-most left-most boundary, its origin.
-		Point origin = shape[0].clone();
-		for (Point p : shape) {
+	//	First, we find the collisionMatrix's top-most left-most boundary, its origin.
+		Point origin = collisionMatrix[0].clone();
+		for (Point p : collisionMatrix) {
 			if (p.x < origin.x) origin.x = p.x;
 			if (p.y < origin.y) origin.y = p.y;
 		}
 		
 	//	Then, we orient all of its points relative to the real origin.
-		for (Point p : shape) {
+		for (Point p : collisionMatrix) {
 			p.x -= origin.x;
 			p.y -= origin.y;
 		}
   	}
-  
-	//"getPoints" applies the rotation and offset to the shape of the polygon.
+
+	//"getPoints" applies the rotation and offset to the collisionMatrix of the polygon.
 	/**
 	 * Returns the actual position of the points of the polygon after rotation and displacement from origin.
-	 * Origin is defined as wherever the average center of the Shape array is.
+	 * Origin is defined as wherever the average center of the collisionMatrix array is.
 	 * @return Returns the array of points that define the polygon, rotated and displaced from the origin and from
 	 * due east position to the current state, as defined in the position and rotation instance variables.
 	 */
   	public Point[] getPoints() {
 		Point center = findCenter();
-		Point[] points = new Point[shape.length];
-		for (int i = 0; i < shape.length; i++) {
-	//	for (Point p : shape) {
-		Point p = shape[i];
+		Point[] points = new Point[collisionMatrix.length];
+		for (int i = 0; i < collisionMatrix.length; i++) {
+	//	for (Point p : collisionMatrix) {
+		Point p = collisionMatrix[i];
 		double x = ((p.x-center.x) * Math.cos(Math.toRadians(rotation)))
 				- ((p.y-center.y) * Math.sin(Math.toRadians(rotation)))
 				+ center.x/2 + position.x;
@@ -87,7 +88,7 @@ public class Polygon {
 	public boolean contains(Point point) {
 		Point[] points = getPoints();
 		double crossingNumber = 0;
-		for (int i = 0, j = 1; i < shape.length; i++, j=(j+1)%shape.length) {
+		for (int i = 0, j = 1; i < collisionMatrix.length; i++, j=(j+1)%collisionMatrix.length) {
 			if ((((points[i].x < point.x) && (point.x <= points[j].x)) ||
 				((points[j].x < point.x) && (point.x <= points[i].x))) &&
 				(point.y > points[i].y + (points[j].y-points[i].y)/
@@ -96,6 +97,26 @@ public class Polygon {
 			}
 		}
 		return crossingNumber%2 == 1;
+	}
+
+	/**
+	 * Setter method for the position point, with a defined x and y displacement.
+	 * @param horizontal	Is the amount by which the X position of the polygon is displaced by.
+	 * @param vertical		Is the amount by which the Y position of the polygon is displaced by.
+	 */
+	public void changePosition(double horizontal, double vertical) {
+		position.setX(position.getX() + horizontal);
+		position.setY(position.getY() + vertical);
+	}
+
+	/**
+	 * 
+	 * @param horizontal	Sets the current X position of the polygon.
+	 * @param vertical		Sets the current Y position of the polygon.
+	 */
+	public void setPosition(double horizontal, double vertical) {
+		position.setX(horizontal);
+		position.setY(vertical);
 	}
   
 	/**
@@ -117,8 +138,8 @@ public class Polygon {
 	 */
 	private double findArea() {
 		double sum = 0;
-		for (int i = 0, j = 1; i < shape.length; i++, j=(j+1)%shape.length) {
-			sum += shape[i].x*shape[j].y-shape[j].x*shape[i].y;
+		for (int i = 0, j = 1; i < collisionMatrix.length; i++, j=(j+1)%collisionMatrix.length) {
+			sum += collisionMatrix[i].x*collisionMatrix[j].y-collisionMatrix[j].x*collisionMatrix[i].y;
 		}
 		return Math.abs(sum/2);
 	}
@@ -126,15 +147,15 @@ public class Polygon {
   	//"findCenter" implements another bit of math.
 	/**
 		 * Finds the average point of all of the points.
-		 * @return Returns the point that is in the average position of all of the points in the Shape array combined.
+		 * @return Returns the point that is in the average position of all of the points in the collisionMatrix array combined.
 		 */
 	private Point findCenter() {
 		Point sum = new Point(0,0);
-		for (int i = 0, j = 1; i < shape.length; i++, j=(j+1)%shape.length) {
-			sum.x += (shape[i].x + shape[j].x)
-					* (shape[i].x * shape[j].y - shape[j].x * shape[i].y);
-			sum.y += (shape[i].y + shape[j].y)
-					* (shape[i].x * shape[j].y - shape[j].x * shape[i].y);
+		for (int i = 0, j = 1; i < collisionMatrix.length; i++, j=(j+1)%collisionMatrix.length) {
+			sum.x += (collisionMatrix[i].x + collisionMatrix[j].x)
+					* (collisionMatrix[i].x * collisionMatrix[j].y - collisionMatrix[j].x * collisionMatrix[i].y);
+			sum.y += (collisionMatrix[i].y + collisionMatrix[j].y)
+					* (collisionMatrix[i].x * collisionMatrix[j].y - collisionMatrix[j].x * collisionMatrix[i].y);
 		}
 		double area = findArea();
 		return new Point(Math.abs(sum.x/(6*area)),Math.abs(sum.y/(6*area)));
