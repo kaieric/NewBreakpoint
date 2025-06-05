@@ -1,5 +1,6 @@
 package game;
 import java.util.ArrayList;
+import java.awt.image.BufferedImage; //pixel art
 /*
 CLASS: Polygon
 DESCRIPTION: A polygon is a sequence of points in space defined by a set of
@@ -18,6 +19,7 @@ NOTE: You don't need to worry about the "magic math" details.
 public class Polygon {
 	public Point[] collisionMatrix;   // An array of points.
 	public ArrayList<Point[]> animationMatrices = new ArrayList<Point[]>(); //an array list of matrices that serve as layers in animation.
+	public BufferedImage pixelImage;
 	public Point position;   // The offset mentioned above.
 	public double rotation; // Zero degrees is due east.
 	/**

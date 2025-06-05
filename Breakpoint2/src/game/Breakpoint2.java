@@ -65,8 +65,16 @@ class Breakpoint2 extends Game {
 			//paints paddle
 			p.move();
 			paintObjects.paint(brush, Color.white, p);
-			b.move();
+			
+			if (INMOTION) {
+				for (int i = 0; i < SPEED; i++) {
+					b.move();
+				}
+			} else {
+				b.ballStuck();
+			}
 			paintObjects.paint(brush, Color.white, b);
+			
 
 
 
@@ -179,12 +187,10 @@ class Breakpoint2 extends Game {
 
 				} //else { //add this in for pause, and secondary menu implementation
 			}
-			/* 
-			if (keyCode == KeyEvent.VK_SHIFT && Breakpoint.INMOTION == false && Breakpoint.MENU == false) {
-				Breakpoint.INMOTION = true;
-				Breakpoint.setSpeed(5);
+			if (keyCode == KeyEvent.VK_SHIFT && Breakpoint2.INMOTION == false && PHASE.length() > 5 && PHASE.substring(0,5).equals("stage")) {
+				Breakpoint2.INMOTION = true;
+				Breakpoint2.setSpeed(5);
 			}
-			*/
 		}
 		/**
 		* Is not used, but is necessary to complete the implementation of KeyListener interface.
@@ -202,7 +208,6 @@ class Breakpoint2 extends Game {
 		public int lethargicPowerTicker = 0;
 		private static int RADIUS = 10;
 		private double angle = 225;
-		private static int SPEED = 5;
 		private double horizontalChange = 0;
 		private double verticalChange = 0;
 		
@@ -228,8 +233,8 @@ class Breakpoint2 extends Game {
 		public void move() {
 			checkPaddle();
 			checkWalls();
-			horizontalChange = SPEED*Math.cos(Math.toRadians(angle));
-			verticalChange = SPEED*Math.sin(Math.toRadians(angle));
+			horizontalChange = Math.cos(Math.toRadians(angle));
+			verticalChange = Math.sin(Math.toRadians(angle));
 			if (hastyPowerTicker != 0 && verticalChange < 0) {
 				SPEED = 10; //if moving up, speed up
 				hastyPowerTicker--;
@@ -290,15 +295,26 @@ class Breakpoint2 extends Game {
 			
 		}
 
+		/**
+		 * Checks the ball for collision with the paddle.
+		 * Adjusts angle based on relative position of impact, including if the ball hits while too low.
+		 */
 		private void checkPaddle() {
 			//get position is assumed to be the center of the brick?
 
 			if (p.collides(b)) {
 				if (((p.getPosition().getX()) - this.getPosition().getX() + 20 + RADIUS) <= 40 + RADIUS
-				&&  ((p.getPosition().getX()) - this.getPosition().getX() + 20 + RADIUS ) >= 0 - RADIUS) {
-					this.setAngle(((p.getPosition().getX()) - this.getPosition().getX())*4.5);
+				&&  ((p.getPosition().getX()) - this.getPosition().getX() + 20 + RADIUS ) >= 0 - RADIUS
+				&& this.getPosition().getY() < p.getPosition().getY()) {
+					//target range: 180 to 360, or -180 to 0, with either -180 or 180 corresponding to LEFTWARD movement.
+					this.setAngle(((p.getPosition().getX()) - this.getPosition().getX())*4.5 - 90);
 				} else {
-				
+					if (this.getPosition().getX() - this.getPosition().getX() > 0 && horizontalChange < 0 && verticalChange > 0) {
+						angle = 180- angle;
+					}
+					if (this.getPosition().getX() - this.getPosition().getX() < 0 && horizontalChange > 0 && verticalChange > 0) {
+						angle = 180 - angle;
+					}
 				}
 				
 			}

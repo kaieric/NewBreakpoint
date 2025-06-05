@@ -42,4 +42,9 @@ public class Brick extends Polygon {
 		
 	}
 
+    //create sub-colored bricks? or maybe use a decorator, with some more generic color variables to represent the different shades that need to be put into a color!
+
+
+
+
 }

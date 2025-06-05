@@ -58,6 +58,7 @@ NOTES:
 -In motion should be a ball variable, with a ball array being looped through, each ball's inmotion checked before moving and checking them.
 -Ball death triggered when the ball array is empty.
 -When a ball is cloned through a brick, the newly spawned ball should start off moving in the opposite direction of the original ball, in order to stop any issues,
+-Make sure that the ball moves as fast as the paddle, or there will be problems with side collisions.
 
 
 
