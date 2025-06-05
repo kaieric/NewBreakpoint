@@ -34,14 +34,14 @@ class Healthbar extends Polygon {
             
         }
 
-		int[] xpos = new int[shape.length];
-		int[] ypos = new int[shape.length];
-		for (int i = 0; i < shape.length; i++) {
-			xpos[i] = (int) shape[i].getX();
-			ypos[i] = (int) shape[i].getY();
+		int[] xpos = new int[collisionMatrix.length];
+		int[] ypos = new int[collisionMatrix.length];
+		for (int i = 0; i < collisionMatrix.length; i++) {
+			xpos[i] = (int) collisionMatrix[i].getX();
+			ypos[i] = (int) collisionMatrix[i].getY();
 		}
 		brush.setColor(Color.white);
-		brush.fillPolygon(xpos, ypos, shape.length);
+		brush.fillPolygon(xpos, ypos, collisionMatrix.length);
 	}
 
     private static Point[] createDodecagonArray() {

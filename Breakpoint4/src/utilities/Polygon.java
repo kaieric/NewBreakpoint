@@ -1,26 +1,11 @@
-package game;
-import java.util.ArrayList;
-import java.awt.image.BufferedImage; //pixel art
-/*
-CLASS: Polygon
-DESCRIPTION: A polygon is a sequence of points in space defined by a set of
-             such points, an offset, and a rotation. The offset is the
-             distance between the origin and the center of the collisionMatrix.
-             The rotation is measured in degrees, 0-360.
-USAGE: You are intended to instantiate this class with a set of points that
-       forever defines its collisionMatrix, and then modify it by repositioning and
-       rotating that collisionMatrix. In defining the collisionMatrix, the relative positions
-       of the points you provide are used, in other words: {(0,1),(1,1),(1,0)}
-       is the same collisionMatrix as {(9,10),(10,10),(10,9)}.
-NOTE: You don't need to worry about the "magic math" details.
-
-*/
+package utilities;
 
 public class Polygon {
-	public Point[] collisionMatrix;   // An array of points.
-	public ArrayList<Point[]> animationMatrices = new ArrayList<Point[]>(); //an array list of matrices that serve as layers in animation.
-	public BufferedImage pixelImage;
-	public Point position;   // The offset mentioned above.
+	public Position[] collisionMatrix;   // An array of points.
+	/* An array list of an array list of matrices- the base point matrix allows a fill.
+	 * The inner ArrayList allows a single image to have
+	 */
+	public Position position;   // The offset mentioned above.
 	public double rotation; // Zero degrees is due east.
 	/**
  	* 
@@ -30,24 +15,26 @@ public class Polygon {
  	* @param inRotation	Stores the angle at which the point array, collisionMatrix, is to be rotated before being pulled for painting
  	* or collision checking.
  	*/
-	public Polygon(Point[] incollisionMatrix, Point inPosition, double inRotation) {
+	public Polygon(Position[] incollisionMatrix, Position inPosition, double inRotation) {
 		collisionMatrix = incollisionMatrix;
 		position = inPosition;
 		rotation = inRotation;
 
 	//	First, we find the collisionMatrix's top-most left-most boundary, its origin.
-		Point origin = collisionMatrix[0].clone();
-		for (Point p : collisionMatrix) {
+		Position origin = collisionMatrix[0].clone();
+		for (Position p : collisionMatrix) {
 			if (p.x < origin.x) origin.x = p.x;
 			if (p.y < origin.y) origin.y = p.y;
 		}
 		
-	//	Then, we orient all of its points relative to the real origin.
-		for (Point p : collisionMatrix) {
+	//	Then, we orient all of its Positions relative to the real origin.
+		for (Position p : collisionMatrix) {
 			p.x -= origin.x;
 			p.y -= origin.y;
 		}
+		
   	}
+	//Constructor that holds several matrices for animation purposes.
 
 	//"getPoints" applies the rotation and offset to the collisionMatrix of the polygon.
 	/**
@@ -56,19 +43,19 @@ public class Polygon {
 	 * @return Returns the array of points that define the polygon, rotated and displaced from the origin and from
 	 * due east position to the current state, as defined in the position and rotation instance variables.
 	 */
-  	public Point[] getPoints() {
-		Point center = findCenter();
-		Point[] points = new Point[collisionMatrix.length];
+  	public Position[] getPoints() {
+		Position center = findCenter(); //average centerpoint of the identity matrix
+		//center = new Position(0,0);
+		Position[] points = new Position[collisionMatrix.length]; //initialized answer array
 		for (int i = 0; i < collisionMatrix.length; i++) {
-	//	for (Point p : collisionMatrix) {
-		Point p = collisionMatrix[i];
-		double x = ((p.x-center.x) * Math.cos(Math.toRadians(rotation)))
-				- ((p.y-center.y) * Math.sin(Math.toRadians(rotation)))
-				+ center.x/2 + position.x;
-		double y = ((p.x-center.x) * Math.sin(Math.toRadians(rotation)))
-				+ ((p.y-center.y) * Math.cos(Math.toRadians(rotation)))
-				+ center.y/2 + position.y;
-		points[i] = new Point(x,y);
+			Position p = collisionMatrix[i];
+			double x = ((p.x-center.x) * Math.cos(Math.toRadians(rotation)))
+					- ((p.y-center.y) * Math.sin(Math.toRadians(rotation)))
+					+ /*center.x/2 + */position.x; //this change might affect rotation. When rotating, the centroid of the polygon being rotated must be 0,0.
+			double y = ((p.x-center.x) * Math.sin(Math.toRadians(rotation)))
+					+ ((p.y-center.y) * Math.cos(Math.toRadians(rotation)))
+					+ /*center.y/2 + */position.y;
+			points[i] = new Position(x,y);
 		}
 		return points;
   	}
@@ -77,9 +64,9 @@ public class Polygon {
 	 * Getter method for point "position"
 	 * @return	Returns the point representing the displacement in vector form from (0,0) to current position.
 	 */
-	public Point getPosition() {
+	public Position getPosition() {
 		return this.position;
-   }
+	}
   
 	// "contains" implements some magical math (i.e. the ray-casting algorithm).
 	/**
@@ -87,8 +74,8 @@ public class Polygon {
 	 * @param point	The point that is to be tested as to whether it is within the bounds of this polygon.
 	 * @return		A boolean representing whether or not the given point is within the area of this polygon.
 	 */
-	public boolean contains(Point point) {
-		Point[] points = getPoints();
+	public boolean contains(Position point) {
+		Position[] points = getPoints();
 		double crossingNumber = 0;
 		for (int i = 0, j = 1; i < collisionMatrix.length; i++, j=(j+1)%collisionMatrix.length) {
 			if ((((points[i].x < point.x) && (point.x <= points[j].x)) ||
@@ -103,8 +90,6 @@ public class Polygon {
 
 	/**
 	 * Setter method for the position point, with a defined x and y displacement.
-	 * @param horizontal	Is the amount by which the X position of the polygon is displaced by.
-	 * @param vertical		Is the amount by which the Y position of the polygon is displaced by.
 	 */
 	public void changePosition(double horizontal, double vertical) {
 		position.setX(position.getX() + horizontal);
@@ -112,9 +97,7 @@ public class Polygon {
 	}
 
 	/**
-	 * 
-	 * @param horizontal	Sets the current X position of the polygon.
-	 * @param vertical		Sets the current Y position of the polygon.
+	 * Setter method for the position point, with a new x and y.
 	 */
 	public void setPosition(double horizontal, double vertical) {
 		position.setX(horizontal);
@@ -123,7 +106,6 @@ public class Polygon {
   
 	/**
 	 * Rotates current orientation clockwise (+y is downwards) by the given degree amount.
-	 * @param degrees		Is the amount that the rotation instance variable is changed by.
 	 */
   	public void rotate(int degrees) {rotation = (rotation+degrees)%360;}
   
@@ -139,11 +121,21 @@ public class Polygon {
 	 * @return Returns the Area as a double of the given polygon based on the identity array of Points.
 	 */
 	private double findArea() {
+		/*
 		double sum = 0;
 		for (int i = 0, j = 1; i < collisionMatrix.length; i++, j=(j+1)%collisionMatrix.length) {
 			sum += collisionMatrix[i].x*collisionMatrix[j].y-collisionMatrix[j].x*collisionMatrix[i].y;
 		}
 		return Math.abs(sum/2);
+		*/
+
+		double sum = 0;
+		for (int i = 0; i < collisionMatrix.length; i++) {
+			int j = (i + 1) % collisionMatrix.length;
+			sum += collisionMatrix[i].x * collisionMatrix[j].y - collisionMatrix[j].x * collisionMatrix[i].y;
+		}
+		return Math.abs(sum / 2);
+		
 	}
   
   	//"findCenter" implements another bit of math.
@@ -151,16 +143,29 @@ public class Polygon {
 		 * Finds the average point of all of the points.
 		 * @return Returns the point that is in the average position of all of the points in the collisionMatrix array combined.
 		 */
-	private Point findCenter() {
-		Point sum = new Point(0,0);
-		for (int i = 0, j = 1; i < collisionMatrix.length; i++, j=(j+1)%collisionMatrix.length) {
+	private Position findCenter() {
+		/*
+		Position sum = new Position(0,0);
+		for (int i = 0; i < collisionMatrix.length; i++) {
+			int j = (i + 1) % collisionMatrix.length;
 			sum.x += (collisionMatrix[i].x + collisionMatrix[j].x)
 					* (collisionMatrix[i].x * collisionMatrix[j].y - collisionMatrix[j].x * collisionMatrix[i].y);
 			sum.y += (collisionMatrix[i].y + collisionMatrix[j].y)
 					* (collisionMatrix[i].x * collisionMatrix[j].y - collisionMatrix[j].x * collisionMatrix[i].y);
 		}
 		double area = findArea();
-		return new Point(Math.abs(sum.x/(6*area)),Math.abs(sum.y/(6*area)));
+		return new Position(Math.abs(sum.x/(6*area)),Math.abs(sum.y/(6*area)));
+		 */
+		Position sum = new Position(0, 0);
+		for (int i = 0; i < collisionMatrix.length; i++) {
+			int j = (i + 1) % collisionMatrix.length;
+			double cross = collisionMatrix[i].x * collisionMatrix[j].y - collisionMatrix[j].x * collisionMatrix[i].y;
+			sum.x += (collisionMatrix[i].x + collisionMatrix[j].x) * cross;
+			sum.y += (collisionMatrix[i].y + collisionMatrix[j].y) * cross;
+		}
+		double area = findArea();
+		return new Position(sum.x / (6 * area), sum.y / (6 * area));
+
 	}
 
 	/**
@@ -169,7 +174,7 @@ public class Polygon {
 	 * @return A boolean representing if any points of the other Polygon are within the area of this Polygon.
 	 */
 	public boolean collides(Polygon other) {
-		Point[] otherPoints = other.getPoints();
+		Position[] otherPoints = other.getPoints();
 		for (int i = 0; i < otherPoints.length; i++) {
 			if (this.contains(otherPoints[i])) {
 				return true;

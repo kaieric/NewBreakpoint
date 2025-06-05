@@ -61,7 +61,7 @@ NOTES:
 -Make sure that the ball moves as fast as the paddle, or there will be problems with side collisions.
 
 
-
+-Alternating bricks, each time a brick is hit, one set of bricks goes low opacity and doesn't have collision, and the other group reappears.
 
 
 The below mark failed attempts.

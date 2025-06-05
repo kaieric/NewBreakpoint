@@ -24,10 +24,13 @@ class Breakpoint2 extends Game {
 	static String PHASE = "menu";
 	private static int SPEED = 5;
 	private static int LIVES = 3;
+	private static int SCORE = 0;
 
 	private static Paddle p;
 	private static Ball b;
 	private static ArrayList<Brick> BRICKLIST = new ArrayList<Brick>();
+
+	private static int speedballTicker = 0; //the tickers being above zero are what enable power-ups.
 
 	private static boolean INMOTION;
 
@@ -41,10 +44,10 @@ class Breakpoint2 extends Game {
 	public void paint(Graphics brush) {
 		//battery of colors to be used (saves on memory a little bit)
 		Color dullAzure = new Color(1, 27, 50);
+		Color synthwavePink = new Color(244, 55, 254);
+		Color synthwaveLightBlue = new Color(55, 254, 210);
 
-		//sets the black background.
-    	//brush.setColor(Color.black);
-    	brush.fillRect(0,0,width,height); //width and height are params in game super class.
+    	brush.fillRect(0,0,width,height); //width and height are params in game super class. Default color is Color.black
 
 		//PHASES: menu, stage01, stage02, stage03, void (end screen)
 
@@ -53,50 +56,57 @@ class Breakpoint2 extends Game {
 			
 		}
 
-		if (PHASE.length() > 5 && PHASE.substring(0,5).equals("stage")) { //if we are on a stage
+		if (PHASE.length() > 5 && PHASE.substring(0,5).equals("stage")) { //if we are on any stage
 			brush.setColor(dullAzure); //sets menu color
 			brush.fillRect(200,0,600,600); //width and height are params in game super class.
 			
 			//paints bricks
 			for (int i = 0; i < BRICKLIST.size(); i++) {
-				BRICKLIST.get(i).paint();
+				//BRICKLIST.get(i).paint();
+				if (BRICKLIST.get(i).isRaster()) {
+					BRICKLIST.get(i).pixelPaint(brush);
+				} else {
+					//paintObjects.paint(brush, synthwaveLightBlue, BRICKLIST.get(i));
+					BRICKLIST.get(i).pixelPaint(brush);
+				}
 			}
 
 			//paints paddle
 			p.move();
-			paintObjects.paint(brush, Color.white, p);
+			paintObjects.paint(brush, synthwavePink, p);
 			
-			if (INMOTION) {
-				for (int i = 0; i < SPEED; i++) {
+			if (INMOTION) { //code for moving the ball.
+				for (int i = 0; i < SPEED; i++) { //solves frame problems by animating b.move() speed times.
 					b.move();
 				}
-			} else {
+			} else { //code for sticking the ball to the paddle.
 				b.ballStuck();
 			}
-			paintObjects.paint(brush, Color.white, b);
+			paintObjects.paint(brush, Color.white, b); //only paints ball after it is moved.
 			
-
-
-
-
+			//experimental pixel art. Only run on stage.
+			/*
 			BufferedImage image = new BufferedImage(10, 10, BufferedImage.TYPE_INT_RGB);
-			image.setRGB(0, 0, Color.RED.getRGB());
-			image.setRGB(2, 0, Color.BLUE.getRGB());
-			brush.drawImage(image, 0, 0, 10 * 10, 10 * 10, null);
+			image.setRGB(0, 0, Color.RED.getRGB()); //10x10 pixel at (5,5)
+			image.setRGB(1, 0, Color.BLUE.getRGB()); //10x10 pixel at 25, 25
+			brush.drawImage(image, 0, 0, 100, 100, null); //x, y, width, height
+			System.out.println(image.getWidth());
+			//Pixelsprite stoff
+			Integer[][] sprtInput = {{0, 1, 0, 1},{1, 0, 1, 0},{0, 1, 0, 1},{1, 0, 1, 0}};
+			Color[] sprtPallete = {Color.yellow, Color.DARK_GRAY};
+			PixelSprite sprt = new PixelSprite(sprtInput, 5, new Point(10, 100), sprtPallete);
+			sprt.paint(brush);
+ 			*/
 
-
-
-
-
-			//animate all of this at the very end, to make scanlines!
+			//animate all of this at the very end, to make scanlines! Only done on stages.
 			brush.setColor(Color.black);
-			if (FRAME % 60 < 30) {
-				for (int i = 0; i < 119; i++) {
-					brush.fillRect(200,i*5,600,2);
+			if (FRAME % 100 < 50) { //cycle lasts 1 second
+				for (int i = 0; i < 149; i++) {
+					brush.fillRect(200,i*4,600,1);
 				}
 			} else {
-				for (int i = 0; i < 119; i++) {
-					brush.fillRect(200,2+i*5,600,2);
+				for (int i = 0; i < 149; i++) {
+					brush.fillRect(200,2+i*4,600,1);
 				}
 			}
 			
@@ -118,10 +128,40 @@ class Breakpoint2 extends Game {
   	}
 
 	public static void initializeStage() {
+		Color synthwaveLightBlue = new Color(55, 254, 210);
+		Color synthwavePink = new Color(244, 55, 254);
 		if (PHASE.equals("stage01")) {
-			for (int col = 0; col < 14; col++) {
-				for (int row = 0; row < 4; row++) {
-
+			//initialize the stage 1 bricks?
+			Color[] sprtPallete = {Color.yellow, Color.DARK_GRAY};
+			Integer[][] stage01Brick = {
+				{0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1},
+				{1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1},
+				{1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1},
+				{1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1},
+				{1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0},
+				{0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0},
+			};
+			PixelSprite sprt = new PixelSprite(stage01Brick, 5, new Point(0, 0), sprtPallete);
+			//now make the bricks
+			for (int col = 0; col < 9; col++) {
+				for (int row = 0; row < 3; row++) {
+					//1st gen
+					//double randomGenHolder = Math.random();
+					//BRICKLIST.add(new Brick(Brick.feederBrickShapeArray, new Point((67.5*col)+200,(37.5*row)+100), 0, synthwaveLightBlue));
+					//second gen
+					//BRICKLIST.add(new Brick(30, 60, new Point((67.5*col)+215,(37.5*row)+100), 0, synthwaveLightBlue));
+					//third gen
+					BRICKLIST.add(new Brick(30, 60, new Point((67.5*col)+215,(37.5*row)+100), 0, sprt));
+				}
+			}
+		} else if (PHASE.equals("stage02")) {
+			
+			
+			for (int col = 0; col < 9; col++) {
+				for (int row = 0; row < 3; row++) {
+					//double randomGenHolder = Math.random();
+					//BRICKLIST.add(new Brick(Brick.feederBrickShapeArray, new Point((67.5*col)+200,(37.5*row)+100), 0, synthwaveLightBlue));
+					BRICKLIST.add(new Brick(30, 60, new Point((67.5*col)+215,(37.5*row)+100), 0, synthwaveLightBlue));
 				}
 			}
 		}
@@ -187,19 +227,28 @@ class Breakpoint2 extends Game {
 
 				} //else { //add this in for pause, and secondary menu implementation
 			}
-			if (keyCode == KeyEvent.VK_SHIFT && Breakpoint2.INMOTION == false && PHASE.length() > 5 && PHASE.substring(0,5).equals("stage")) {
+			if (keyCode == KeyEvent.VK_UP && Breakpoint2.INMOTION == false && PHASE.length() > 5 && PHASE.substring(0,5).equals("stage")) {
 				Breakpoint2.INMOTION = true;
 				Breakpoint2.setSpeed(5);
 			}
 		}
-		/**
-		* Is not used, but is necessary to complete the implementation of KeyListener interface.
-		*/
+		//Is not used, but is necessary to complete the implementation of KeyListener interface.
 		@Override
 		public void keyReleased(KeyEvent e) {
 			
+		}	
+	}
+
+	public void checkLevel() {
+		if (BRICKLIST.size() == 0) {
+			if (PHASE.equals("stage01")) {
+				//at stage01 completion:
+				Breakpoint2.INMOTION = false;
+				b.ballStuck(); //needed to stop the ball's old position from deleting 4 different bricks before moving back to the paddle.
+				PHASE = "stage02";
+				initializeStage();
+			}
 		}
-		
 	}
 
 	public class Ball extends Polygon {
@@ -233,6 +282,7 @@ class Breakpoint2 extends Game {
 		public void move() {
 			checkPaddle();
 			checkWalls();
+			checkBricks();
 			horizontalChange = Math.cos(Math.toRadians(angle));
 			verticalChange = Math.sin(Math.toRadians(angle));
 			if (hastyPowerTicker != 0 && verticalChange < 0) {
@@ -282,7 +332,7 @@ class Breakpoint2 extends Game {
 				}
 			}
 			//bottom wall negative vertical direction
-			if (this.position.getY() >= 790 && verticalChange > 0) {
+			if (this.position.getY() >= 590 && verticalChange > 0) {
 				ballDeath();
 			}
 			
@@ -307,16 +357,57 @@ class Breakpoint2 extends Game {
 				&&  ((p.getPosition().getX()) - this.getPosition().getX() + 20 + RADIUS ) >= 0 - RADIUS
 				&& this.getPosition().getY() < p.getPosition().getY()) {
 					//target range: 180 to 360, or -180 to 0, with either -180 or 180 corresponding to LEFTWARD movement.
-					this.setAngle(((p.getPosition().getX()) - this.getPosition().getX())*4.5 - 90);
+					this.setAngle((((this.getPosition().getX()) - p.getPosition().getX())*4) + 270);
+					//maximum angle is 20 * 4 above equation
 				} else {
+					//hitting the side of the paddle
 					if (this.getPosition().getX() - this.getPosition().getX() > 0 && horizontalChange < 0 && verticalChange > 0) {
-						angle = 180- angle;
+						angle = 180 - angle;
 					}
 					if (this.getPosition().getX() - this.getPosition().getX() < 0 && horizontalChange > 0 && verticalChange > 0) {
 						angle = 180 - angle;
 					}
 				}
 				
+			}
+		}
+
+		//Checks collision between this ball and the bricks.
+		private void checkBricks() {
+			for (int i = 0; i < BRICKLIST.size(); i++) {
+				if (BRICKLIST.get(i).collides(b)) {
+					this.bounceOffBrick(BRICKLIST.get(i));
+					/*
+					if (BRICKLIST.get(i) instanceof Brick.LethargicBrick) {
+					b.lethargicPowerTicker+=200;
+					} else if (BRICKLIST.get(i) instanceof Brick.HastyBrick) {
+						b.hastyPowerTicker+=200;
+					}
+					*/
+					BRICKLIST.remove(i);
+					SCORE+=10;
+					checkLevel();
+				}
+			}
+		}
+
+		/**
+		 * Alters the angle of the ball when it makes impact with brick
+		 * @param brick The brick that was impacted by the ball.
+		 */
+		public void bounceOffBrick(Brick brick) {
+			Point[] ballPoints = this.getPoints();
+			for (int i = 1; i < ballPoints.length-1; i+=2) { //handles diagonal collisions
+				if (brick.contains(ballPoints[i])) {
+					angle = 180 - angle; //horizontal direction inversion
+					angle = 360 - angle; //vertical direction inversion
+				}
+			}
+			if (brick.contains(ballPoints[0]) || brick.contains(ballPoints[4])) {
+				angle = 180 - angle; //horizontal direction inversion
+			}
+			if (brick.contains(ballPoints[2]) || brick.contains(ballPoints[6])) {
+				angle = 360 - angle; //horizontal direction inversion
 			}
 		}
 
@@ -331,7 +422,6 @@ class Breakpoint2 extends Game {
 		/**
 	 	 *updates the current angle of the ball
 	 	 */
-		
 		/**
 		 * Setter method for angle.
 		 * @param newAngle	is the new Angle (duh).
@@ -351,6 +441,7 @@ class Breakpoint2 extends Game {
 			angle = 225; //equivalent to 135, but because y is negative, this is really weird.
 			Breakpoint2.LIVES--;
 		}
+		
 		/**
 	 	 *	Moves the ball to just above the paddle by changing position to the paddle's x position, and a y position just
 	 	 *above that of the paddle's. Is called every frame if INMOTION is false.
@@ -358,8 +449,6 @@ class Breakpoint2 extends Game {
 		public void ballStuck() {
 			setPosition(p.getPosition().getX(), p.getPosition().getY() - ((RADIUS*2) + 15));
 		}
-
-
 	}
 
 	/**
