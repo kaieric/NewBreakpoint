@@ -50,7 +50,7 @@ Add additional notes to deploy this on a live system
 
 ## Built With
 
-* [![Next][Next.js]][Next-url]
+[![Next.js](https://upload.wikimedia.org/wikipedia/commons/4/47/Next.js_Logo.svg)](https://nextjs.org)
 
   - [Contributor Covenant](https://www.contributor-covenant.org/) - Used
     for the Code of Conduct
