@@ -22,10 +22,10 @@ public class Paddle extends Polygon {
 
     public void update() {
         if (!(controller.isRight() && controller.isLeft())) {
-            if (controller.isRight() && this.position.getX() < 780 - paddleSpeed) {
+            if (controller.isRight() && this.position.getX() < 790 - paddleSpeed) {
                 this.position.setX(this.position.getX() + paddleSpeed);
             }
-            if (controller.isLeft() && this.position.getX() > 220 + paddleSpeed) {
+            if (controller.isLeft() && this.position.getX() > 210 + paddleSpeed) {
                 this.position.setX(this.position.getX() - paddleSpeed);
             }
         }

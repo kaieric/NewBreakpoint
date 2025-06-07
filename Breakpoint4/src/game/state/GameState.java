@@ -110,8 +110,8 @@ public class GameState extends State {
     public ArrayList<Brick> initializeStage01Legend() {
         ArrayList<Brick> bricks = new ArrayList<Brick>();
         bricks.add(new Brick(new Position(100, 100)));
-        bricks.add(new SlowBrick(new Position(100, 200)));
-        bricks.add(new FastBrick(new Position(100, 300)));
+        bricks.add(new SlowBrick(new Position(100, 180)));
+        bricks.add(new FastBrick(new Position(100, 260)));
         return bricks;
     }
 

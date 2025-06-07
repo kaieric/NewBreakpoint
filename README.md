@@ -64,7 +64,5 @@ NOTES:
 -Alternating bricks, each time a brick is hit, one set of bricks goes low opacity and doesn't have collision, and the other group reappears.
 
 
-The below mark failed attempts.
-test 01
-test 02
-test 03
+
+-Have an options menu with a series of buttons. the buttons change their title when clicked, allowing for an infinite lives mode, or an immortality mode. Starting level selector? Back to the menu button for the endscreen alongside a play again button.
