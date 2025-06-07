@@ -1,68 +1,90 @@
-# NewBreakpoint
-Building on top of existing class project for fun, mostly completely refactoring old code and adding new features.
-Also for you Samara, I decided to keep the incorrect title. 
+# Breakpoint
 
+This is a recreation of the classic arcade game, Breakout, except made entirely from scratch in Java using VScode.
 
-GIT HUB:
+## Getting Started
 
-For some pushes we can just use the push button?
-Get some standardized git instructions
+Breakpoint4 is the only file that should be run, or added to the java source path, as it contains the whole project. src must also be part of the java source path, which it should be by default.
 
-When adding a new local repository (basically a workspace):
--Make the remote repository on github.com
--Use vscode to make a clone of this (alternatively "git init" turns the file your cd'd in into a repo)
--Make sure you are in the correct folder (the local repo will be your workspace)
--"git status" tells you if you are indeed within a repo
+### Prerequisites
 
-When adding a new remote Repository (you should be in your local cloned repo to do this):
--"git remote add origin" https://github.com/your-username/your-repo-name.git
--"git remote -v"
+Requirements for the software and other tools to build, test and push 
+- [Example 1](https://www.example.com)
+- [Example 2](https://www.example.com)
 
+### Installing
 
+A step by step series of examples that tell you how to get a development
+environment running
 
-Terminal instructions:
-1. "git add" . OR "git add filename1 filename2"
-2. "git commit -m"MESSAGE HERE""    >> "git log --oneline" This shows a short list of commits for verification.
-3. "git push"
-4. just in case if 3 doesn't work use instead (replacing step 3 while retrying): "git push -u origin main"
+Say what the step will be
 
-Step 4's purpose is to set main as the default push location.
+    Give the example
 
-When Pulling code:
-just write "git pull" and you're done.
+And repeat
 
-Links:
-https://code.visualstudio.com/docs/sourcecontrol/intro-to-git ()
-parse hour: https://stackoverflow.com/questions/22278748/zsh-parse-error-near-n-when-adding-aws-keys-as-environment-variables
-adding clone repo with vscode: https://stackoverflow.com/questions/46877667/how-to-add-a-new-project-to-github-using-vs-code
+    until finished
 
+End with an example of getting some data out of the system or using it
+for a little demo
 
-Indentation: On the bottomost bar, selects Spaces: [number]. At the top search bar, select indent by tab, and select the number of spaces per tab. 4 spaces is default, select it.
+## Running the tests
 
+Explain how to run the automated tests for this system
 
+### Sample Tests
 
+Explain what these tests test and why
 
-PRELIMINARY GOAL:
-Basic functionality of:
--Menu
--Healthbar
--Cutesy pricks, ball, and paddle (skins atop the collision matrices)
--Rename point[] shape to matrix, and have a collision matrix, and then aesthetic matrices.
+    Give an example
 
--Alter Polygon such that instead of a single shape, we have a collision matrix IN ADDITION to an array of skin arrays / images??? which are all moved by getPosition and whatnot.
--
--
+### Style test
 
-NOTES:
--Spawn ball should have some parameters, allowing spawning them in in motion or not, with a starting angle. This will be used to handle both respawning and cloninng
--In motion should be a ball variable, with a ball array being looped through, each ball's inmotion checked before moving and checking them.
--Ball death triggered when the ball array is empty.
--When a ball is cloned through a brick, the newly spawned ball should start off moving in the opposite direction of the original ball, in order to stop any issues,
--Make sure that the ball moves as fast as the paddle, or there will be problems with side collisions.
+Checks if the best practices and the right coding style has been used.
 
+    Give an example
 
--Alternating bricks, each time a brick is hit, one set of bricks goes low opacity and doesn't have collision, and the other group reappears.
+## Deployment
 
+Add additional notes to deploy this on a live system
 
+## Built With
 
--Have an options menu with a series of buttons. the buttons change their title when clicked, allowing for an infinite lives mode, or an immortality mode. Starting level selector? Back to the menu button for the endscreen alongside a play again button.
+* [![Next][Next.js]][Next-url]
+
+  - [Contributor Covenant](https://www.contributor-covenant.org/) - Used
+    for the Code of Conduct
+  - [Creative Commons](https://creativecommons.org/) - Used to choose
+    the license
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code
+of conduct, and the process for submitting pull requests to us.
+
+## Versioning
+
+We use [Semantic Versioning](http://semver.org/) for versioning. For the versions
+available, see the [tags on this
+repository](https://github.com/PurpleBooth/a-good-readme-template/tags).
+
+## Authors
+
+  - **Billie Thompson** - *Provided README Template* -
+    [PurpleBooth](https://github.com/PurpleBooth)
+
+See also the list of
+[contributors](https://github.com/PurpleBooth/a-good-readme-template/contributors)
+who participated in this project.
+
+## License
+
+This project is licensed under the [CC0 1.0 Universal](LICENSE.md)
+Creative Commons License - see the [LICENSE.md](LICENSE.md) file for
+details
+
+## Acknowledgments
+
+  - Hat tip to anyone whose code is used
+  - Inspiration
+  - etc
