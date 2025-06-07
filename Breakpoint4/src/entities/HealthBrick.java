@@ -5,9 +5,9 @@ import utilities.Polygon;
 import utilities.*;
 import java.awt.*;
 
-public class CloneBrick extends Brick {
+public class HealthBrick extends Brick {
 
-    public CloneBrick(Position position) {
+    public HealthBrick(Position position) {
         super(position);
         this.pixelSprite = initializePixelSprite(position);
         desc = "Ball Cloning Brick";

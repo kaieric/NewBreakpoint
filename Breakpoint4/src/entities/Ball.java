@@ -6,6 +6,7 @@ import utilities.Position;
 import utilities.*;
 import entities.*;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 import controller.*;
@@ -24,8 +25,8 @@ public class Ball extends GameObject {
     ArrayList<Ball> balls;
     Controller controller;
     
-    public Ball(Position position, PixelSprite pixelSprite, ArrayList<Ball> balls, Controller controller) {
-        super(new Polygon(createOctagonArray(), position, 0), position, pixelSprite);
+    public Ball(Position position, ArrayList<Ball> balls, Controller controller) {
+        super(new Polygon(createOctagonArray(), position, 0), position, initializePixelSprite(position));
         this.balls = balls;
         this.stuck = true;
         this.controller = controller;
@@ -37,6 +38,19 @@ public class Ball extends GameObject {
             octagonPoints[i] = new Position(Math.cos((Math.PI*i*45/180))*RADIUS, Math.sin((Math.PI*i*45/180))*RADIUS);
             }
         return octagonPoints;
+    }
+
+    private static PixelSprite initializePixelSprite(Position position) {
+        Color[] sprtPallete = {Color.white};
+        Integer[][] pxIntegers = new Integer[RADIUS * 2][RADIUS * 2];
+        for (int row = 0; row < pxIntegers.length; row++) {
+            for (int col = 0; col < pxIntegers[row].length; col++) {
+                if (RADIUS >= Math.sqrt(Math.pow(row - (RADIUS), 2) + Math.pow(col - (RADIUS), 2))) {
+                    pxIntegers[row][col] = 0;
+                }
+            }
+        }
+        return new PixelSprite(pxIntegers, 1, position, sprtPallete);
     }
 
     public void update(Paddle p, ArrayList<Brick> brickList) {

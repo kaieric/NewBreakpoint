@@ -117,7 +117,7 @@ public class GameState extends State {
 
     public ArrayList<Ball> initializeBalls() {
         ArrayList<Ball> balls = new ArrayList<Ball>();
-        balls.add(new Ball(new Position(300, 300), null, balls, new PlayerController(input)));
+        balls.add(new Ball(new Position(300, 300), balls, new PlayerController(input)));
         return balls;
     }
 

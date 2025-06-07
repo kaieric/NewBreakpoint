@@ -119,9 +119,8 @@ public class Renderer {
 
     public void renderBalls(Graphics graphics, ArrayList<Ball> ballList) {
         for (int i = 0; i < ballList.size(); i++) {
-            //ballList.get(i).getPixelSprite().paint(graphics);
-            //collision matrix testing
-            renderPolygon(graphics, new Color(255, 255, 255, 128), ballList.get(i).getCollisionMatrix());
+            //renderPolygon(graphics, new Color(255, 255, 255, 128), ballList.get(i).getCollisionMatrix());
+            ballList.get(i).getPixelSprite().paint(graphics);
         }
     }
 
