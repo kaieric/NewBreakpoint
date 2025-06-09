@@ -29,8 +29,8 @@ public class Game {
         display = new Display(width, height, input); //passes the input to the display
         //creates all of the states.
         menuState = new MenuState(input, this);
-        gameState = new GameState(input);
-        endState = new EndState(input);
+        gameState = new GameState(input, this);
+        endState = new EndState(input, this);
         currentState = menuState;
 
         //rectangle = new Rectangle(0,0,50,50);
@@ -40,13 +40,13 @@ public class Game {
         currentState.update();
     }
 
-    public void changeState() {
+    public void toGameState() {
         if (currentState == menuState) {
             currentState = gameState;
         } else if (currentState == gameState) {
             currentState = endState;
         } else if (currentState == endState) {
-            gameState = new GameState(input); //starts a new run
+            gameState = new GameState(input, this); //starts a new run
             currentState = endState;
         }
     }

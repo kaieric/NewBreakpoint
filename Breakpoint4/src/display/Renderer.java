@@ -18,9 +18,10 @@ public class Renderer {
 
     public void render(State state, Graphics graphics) {
         if (state instanceof MenuState) {
-            graphics.setColor(new Color(250,248,239));
+            //graphics.setColor(new Color(250,248,239)); light beige
+            graphics.setColor(Color.black);
             graphics.fillRect(0, 0, 800, 600);
-            renderButton(graphics, ((MenuState) state).getButton());
+            renderButtons(graphics, ((MenuState) state).getButtons());
         } else if (state instanceof GameState) {
             graphics.setColor(dullAzure); //sets game backgroundcolor
 			graphics.fillRect(200,0,600,600); //width and height are params in game super class.
@@ -32,7 +33,7 @@ public class Renderer {
             renderBricks(graphics, ((GameState) state).getBricks());
 
             //renders legend
-            renderBrickLegend(graphics, ((GameState) state).getLegend());
+            renderBrickLegend(graphics, ((GameState) state).getLegend(), state);
 
             //renders balls
             renderBalls(graphics, ((GameState)state).getBalls());
@@ -89,7 +90,7 @@ public class Renderer {
         }
     }
 
-    public void renderBrickLegend(Graphics graphics, ArrayList<Brick> brickLegend) {
+    public void renderBrickLegend(Graphics graphics, ArrayList<Brick> brickLegend, State state) {
         for (int i = 0; i < brickLegend.size(); i++) {
             brickLegend.get(i).getPixelSprite().paint(graphics);
             graphics.setColor(Color.white);
@@ -113,7 +114,17 @@ public class Renderer {
                 graphics.drawString(Integer.toString(Ball.LETHARGICPOWERTICKER), (int)brickLegend.get(i).getPosition().x, y + 50);
             }
 
-            graphics.drawString("Score: " + GameState.score, 50, 500);
+
+
+            if (((GameState)state).getScore() < 10) {
+                graphics.drawString("SCORE: 000" + ((GameState)state).getScore(), 50, 500);
+            } else if (((GameState)state).getScore() < 100) {
+                graphics.drawString("SCORE: 00" + ((GameState)state).getScore(), 50, 500);
+            } else if (((GameState)state).getScore() < 1000) {
+                graphics.drawString("SCORE: 0" + ((GameState)state).getScore(), 50, 500);
+            } else {
+                graphics.drawString("SCORE: " + ((GameState)state).getScore(), 50, 500);
+            }
         }
     }
 
@@ -124,8 +135,9 @@ public class Renderer {
         }
     }
 
-    public void renderButton(Graphics graphics, Button button) {
-        button.getPixelSprite().paint(graphics);
+    public void renderButtons(Graphics graphics, ArrayList<Button> buttons) {
+        for (int i = 0; i < buttons.size(); i++) {
+            buttons.get(i).getPixelSprite().paint(graphics);
 
         Font font = new Font("Courier", Font.PLAIN, 20); // Or whatever size you want
         graphics.setFont(font);
@@ -133,15 +145,16 @@ public class Renderer {
         FontMetrics metrics = graphics.getFontMetrics(font);
 
         // Get width and height of the string
-        int textWidth = metrics.stringWidth(button.getText());
+        int textWidth = metrics.stringWidth(buttons.get(i).getText());
         int textHeight = metrics.getAscent() - metrics.getDescent();
 
         // Calculate top-left point so that the center is at (centerX, centerY)
-        int x = (int)button.getPosition().x - textWidth / 2;
-        int y = (int)button.getPosition().y + textHeight / 2;
+        int x = (int)buttons.get(i).getPosition().x - textWidth / 2;
+        int y = (int)buttons.get(i).getPosition().y + textHeight / 2;
 
         graphics.setColor(Color.black);
-        graphics.drawString(button.getText(), x, y);
+        graphics.drawString(buttons.get(i).getText(), x, y);
+        }
     }
 
 

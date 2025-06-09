@@ -5,6 +5,7 @@ import utilities.Polygon;
 import utilities.Position;
 import utilities.*;
 import entities.*;
+import game.state.GameState;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -24,12 +25,14 @@ public class Ball extends GameObject {
     
     ArrayList<Ball> balls;
     Controller controller;
+    GameState gameState;
     
-    public Ball(Position position, ArrayList<Ball> balls, Controller controller) {
+    public Ball(Position position, ArrayList<Ball> balls, Controller controller, GameState gameState) {
         super(new Polygon(createOctagonArray(), position, 0), position, initializePixelSprite(position));
         this.balls = balls;
         this.stuck = true;
         this.controller = controller;
+        this.gameState = gameState;
     }
         
     private static Position[] createOctagonArray() {
@@ -122,7 +125,12 @@ public class Ball extends GameObject {
         }
         //bottom wall negative vertical direction
         if (this.position.getY() >= 590 && verticalChange > 0) {
-            ballDeath();
+            if (!GameState.isDemo()) { //ball only dies when not in demo mode.
+                ballDeath();
+            } else {
+                angle = 360 - angle;
+            }
+            
         }
         
         if (angle <= -360) {
@@ -167,15 +175,16 @@ public class Ball extends GameObject {
         for (int i = 0; i < brickList.size(); i++) {
             if (brickList.get(i).getCollisionMatrix().collides(this.getCollisionMatrix())) {
                 this.bounceOffBrick(brickList.get(i));
-            
+                gameState.addScore(10);
             if (brickList.get(i) instanceof SlowBrick) {
                 LETHARGICPOWERTICKER += 200;
+                gameState.addScore(20);
             } else if (brickList.get(i) instanceof FastBrick) {
                 HASTYPOWERTICKER += 1000;
+                gameState.addScore(20);
             }
                 brickList.remove(i);
-                //SCORE+=10;
-                //checkLevel();
+                gameState.checkLevel(brickList);
             }
         }
     }

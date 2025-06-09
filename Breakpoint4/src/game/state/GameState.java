@@ -2,6 +2,7 @@ package game.state;
 
 import controller.*;
 import entities.*;
+import game.Game;
 
 import java.awt.Color;
 import java.util.*;
@@ -17,15 +18,21 @@ public class GameState extends State {
     private ArrayList<Brick> brickLegend;
     private ArrayList<Ball> ballList;
     private int lives = 3;
-    public static int score;
+    public int score;
+
+    private static boolean demoMode = false;
+    private Game game;
     
 
-    public GameState(Input input) {
+    public GameState(Input input, Game game) {
         super(input);
-        stage = 0;
+        this.game = game;
+
+        stage = 1;
         score = 0;
         paddle = new Paddle(new PlayerController(input));
-        brickList = initializeStage01(); //fills out the bricklist arraylist
+        brickList = new ArrayList<Brick>();
+        initializeStage(stage); //fills out the bricklist arraylist
         brickLegend = initializeStage01Legend();
         ballList = initializeBalls();
         //gameMap = new GameMap(new Size(20, 20), spriteLibrary);
@@ -43,7 +50,9 @@ public class GameState extends State {
             }
             paddle.update();
             if (ballList.size() == 0 && lives > 0) {
-                lives--;
+                if (!demoMode) {
+                    lives--; //under demoMode, lives are not decreased.
+                }
                 if (lives == 0) {
                     //gameOverScreen
                 } else {
@@ -85,26 +94,59 @@ public class GameState extends State {
         return paused;
     }
 
-    public ArrayList<Brick> initializeStage01() {
-        ArrayList<Brick> bricks = new ArrayList<Brick>();
-        for (int col = 0; col < 9; col++) {
-            for (int row = 0; row < 3; row++) {
-                //1st gen
-                //double randomGenHolder = Math.random();
-                //BRICKLIST.add(new Brick(Brick.feederBrickShapeArray, new Point((67.5*col)+200,(37.5*row)+100), 0, synthwaveLightBlue));
-                //second gen
-                //BRICKLIST.add(new Brick(30, 60, new Point((67.5*col)+215,(37.5*row)+100), 0, synthwaveLightBlue));
-                //third gen
-                if (col == row) {
-                    bricks.add(new FastBrick(new Position((67.5*col)+230,(37.5*row)+100)));
-                } else if (col == row + 3) {
-                    bricks.add(new SlowBrick(new Position((67.5*col)+230,(37.5*row)+100)));
-                } else {
-                    bricks.add(new Brick(new Position((67.5*col)+230,(37.5*row)+100)));
+    public static void setDemo(boolean bool) {
+        demoMode = bool;
+    }
+
+    public static boolean isDemo() {
+        return demoMode;
+    }
+
+    public void checkLevel(ArrayList<Brick> bricks) {
+        if (bricks.size() < 1) {
+            stage++;
+            initializeStage(stage);
+        }
+    }
+
+    public void addScore(int add) {
+        score+= add;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void initializeStage(int stage) {
+        System.out.println("new stage");
+        System.out.println(stage);
+        if (stage == 1) {
+            for (int col = 0; col < 9; col++) {
+                for (int row = 0; row < 3; row++) {
+                    if (col == row) {
+                        brickList.add(new FastBrick(new Position((67.5*col)+230,(37.5*row)+100)));
+                    } else if (col == row + 3) {
+                        brickList.add(new SlowBrick(new Position((67.5*col)+230,(37.5*row)+100)));
+                    } else {
+                        brickList.add(new Brick(new Position((67.5*col)+230,(37.5*row)+100)));
+                    }
                 }
             }
+        } else if (stage == 2) {
+            for (int col = 0; col < 9; col++) {
+                for (int row = 0; row < 3; row++) {
+                    if (col == row) {
+                        brickList.add(new FastBrick(new Position((67.5*col)+230,(37.5*row)+100)));
+                    } else if (col == row + 3) {
+                        brickList.add(new SlowBrick(new Position((67.5*col)+230,(37.5*row)+100)));
+                    } else {
+                        brickList.add(new Brick(new Position((67.5*col)+230,(37.5*row)+100)));
+                    }
+                }
+            }
+        } else {
+            //have some victory screen
         }
-        return bricks;
     }
 
     public ArrayList<Brick> initializeStage01Legend() {
@@ -117,7 +159,7 @@ public class GameState extends State {
 
     public ArrayList<Ball> initializeBalls() {
         ArrayList<Ball> balls = new ArrayList<Ball>();
-        balls.add(new Ball(new Position(300, 300), balls, new PlayerController(input)));
+        balls.add(new Ball(new Position(300, 300), balls, new PlayerController(input), this));
         return balls;
     }
 
